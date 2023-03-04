@@ -5,9 +5,11 @@ const session = require("express-session");
 const MongoStore = require("connect-mongo");
 require("dotenv").config({ path: "./config/config.env" });
 
-const authRoutes = require("./routes/auth");
-const loggedInRoutes = require("./routes/loggedIn");
-const requireAuth = require("./middleware/authenticateRoute");
+const userAuthRoutes = require("./routes/auth/user");
+const adminAuthRoutes = require("./routes/auth/admin");
+const userProtectedRoutes = require("./routes/protected/user");
+const adminProtectedRoutes = require("./routes/protected/admin");
+const { requireAdmin, requireUser } = require("./middleware/authenticateRoute");
 const errorHandler = require("./middleware/errorHandler");
 require("./config/passport");
 
@@ -33,8 +35,10 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 // Define routes and other middleware
-app.use("/auth", authRoutes);
-app.use("/", requireAuth, loggedInRoutes);
+app.use("/auth/user", userAuthRoutes);
+app.use("/auth/admin", adminAuthRoutes);
+app.use("/user", requireUser, userProtectedRoutes);
+app.use("/admin", requireAdmin, adminProtectedRoutes);
 
 // Add error handling middleware to the app
 app.use(errorHandler);

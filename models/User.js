@@ -15,9 +15,10 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
+    minlength: 7,
     unique: true,
+    match: /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/,
   },
-  // add any other relevant fields
 });
 
 function comparePassword(inputedPassword) {

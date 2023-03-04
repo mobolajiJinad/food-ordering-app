@@ -23,7 +23,7 @@ passport.use(
     {
       clientID: process.env.CLIENT_ID,
       clientSecret: process.env.CLIENT_SECRET,
-      callbackURL: "/auth/google/callback",
+      callbackURL: "/auth/user/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
@@ -54,11 +54,10 @@ passport.use(
     },
     async (usernameOrEmail, password, done) => {
       try {
-        let searchProperty = "email";
-
+        let searchProperty;
         let query = {};
 
-        if (usernameOrEmail.includes(".com") && usernameOrEmail.length > 9) {
+        if (usernameOrEmail.includes(".com") && usernameOrEmail.length > 7) {
           searchProperty = "email";
         } else {
           searchProperty = "username";
@@ -77,7 +76,9 @@ passport.use(
         const isMatch = await user.comparePassword(password);
 
         if (!isMatch) {
-          return done(null, false, { msg: "Incorrect email or password." });
+          return done(null, false, {
+            msg: `Incorrect ${searchProperty} or password.`,
+          });
         }
 
         done(null, user);

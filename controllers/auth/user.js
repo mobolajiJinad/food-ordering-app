@@ -1,35 +1,19 @@
-const express = require("express");
 const passport = require("passport");
 const { StatusCodes } = require("http-status-codes");
 
-const User = require("../models/User");
-const genPassword = require("../middleware/generatePassword");
+const User = require("../../models/User");
+const genPassword = require("../../middleware/generatePassword");
 
-const router = express.Router();
-
-router.get(
-  "/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
-);
-
-router.get(
-  "/google/callback",
-  passport.authenticate("google", {
-    failureRedirect: "/login",
-  }),
-  (err, req, res, next) => {
-    if (err) {
-      return res
-        .status(StatusCodes.UNAUTHORIZED)
-        .json({ error: "Failed to authenticate with Google" });
-    }
-    res.status(StatusCodes.OK).json({ msg: "Login successful" });
+const googleCallbackCtrller = (err, req, res, next) => {
+  if (err) {
+    return res
+      .status(StatusCodes.UNAUTHORIZED)
+      .json({ error: "Failed to authenticate with Google" });
   }
-);
+  res.status(StatusCodes.OK).json({ msg: "Login successful" });
+};
 
-router.post("/login", (req, res, next) => {
+const loginLocalCtrller = (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
       return next(err);
@@ -38,7 +22,7 @@ router.post("/login", (req, res, next) => {
     if (!user) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
-        .json({ msg: "Invalid email or password" });
+        .json({ msg: "Invalid credentials" });
     }
 
     req.logIn(user, (err) => {
@@ -49,18 +33,18 @@ router.post("/login", (req, res, next) => {
       return res.status(StatusCodes.OK).json({ msg: "Login successful" });
     });
   })(req, res, next);
-});
+};
 
-router.get("/logout", (req, res, next) => {
+const logoutLocalCtrller = (req, res, next) => {
   req.logout((err) => {
     if (err) {
       next(err);
     }
     res.status(StatusCodes.OK).json({ msg: "Log out successful" });
   });
-});
+};
 
-router.post("/signup", async (req, res, next) => {
+const signUpLocalContrller = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
 
@@ -84,7 +68,11 @@ router.post("/signup", async (req, res, next) => {
     // Handle errors
     next(err);
   }
-});
+};
 
-// Export the router
-module.exports = router;
+module.exports = {
+  googleCallbackCtrller,
+  loginLocalCtrller,
+  logoutLocalCtrller,
+  signUpLocalContrller,
+};
