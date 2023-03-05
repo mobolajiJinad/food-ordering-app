@@ -1,5 +1,6 @@
 const express = require("express");
 const mongoose = require("mongoose");
+const morgan = require("morgan");
 const passport = require("passport");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -17,6 +18,9 @@ const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
+}
 
 // Sessions
 app.use(
@@ -38,7 +42,7 @@ app.use(passport.session());
 app.use("/auth/user", userAuthRoutes);
 app.use("/auth/admin", adminAuthRoutes);
 app.use("/user", requireUser, userProtectedRoutes);
-app.use("/admin", requireAdmin, adminProtectedRoutes);
+app.use("/admin/dashboard", requireAdmin, adminProtectedRoutes);
 
 // Add error handling middleware to the app
 app.use(errorHandler);

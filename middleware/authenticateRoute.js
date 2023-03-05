@@ -11,6 +11,7 @@ const requireUser = (req, res, next) => {
 
 const requireAdmin = (req, res, next) => {
   if (req.session && req.session.user && req.session.user.isAdmin) {
+    req.user = req.session.user;
     next();
   } else {
     res

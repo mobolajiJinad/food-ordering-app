@@ -1,14 +1,19 @@
 # Food Ordering App
 
+## NOTE
+
+Admin is used to refer to cooks or chefs advertise and sell their foods.<br>
+User refers to customers interested in ordering.<br>
+All routes and form names should be same
+<br><br>
+
 ## Creating the sign up page for admin
 
-_NOTE: Username and password must be provided._
+_NOTE: Username and password must be provided._<br>
 _Example_
 
 ```
 html
-
-<!-- All routes and form names should be same -->
 
 <form action="/auth/admin/signup" method="post">
   <label for="username">username</label>
@@ -23,13 +28,11 @@ html
 
 ## Creating the login up page for admin
 
-_NOTE: Username and password must be provided._
+_NOTE: Username and password must be provided._<br>
 _Example_
 
 ```
 html
-
-<!-- All routes and form names should be same -->
 
 <form action="/auth/admin/login" method="post">
   <input type="text" name="username" id="", placeholder="Enter username">
@@ -48,9 +51,56 @@ _Example_
 ```
 html
 
-<!-- All routes and form names should be same -->
-
 <a href="auth/admin/logout">Logout</a>
+```
+
+## Getting admin to upload their products
+
+_Example_
+
+```
+html
+
+<!--NOTE: All fields are required -->
+
+<form action="/admin/dashboard/product/upload" method="post">
+  <label for="name">Name of food:</label>
+  <input type="text" name="name" id="">
+
+  <label for="description">Description: </label>
+  <textarea name="description" id="" cols="30" rows="10"></textarea>
+
+  <!--Price should be a number-->
+  <label for="price">Price: </label>
+  <input type="number" name="price" id="">
+
+  <label for="image">Upload your food/dish image</label>
+  <input type="file" name="image" id="">
+
+  <input type="submit" value="Add">
+</form>
+```
+
+## Deleting an admin's product
+
+_Example_
+
+```
+html
+
+<!--NOTE: this should be a delete request-->
+
+<a href="/admin/product/:productId">Delete</a>
+```
+
+## Getting all admin's products
+
+_Example_
+
+```
+html
+
+<a href="/admin/dashboard/products">Get all your products</a>
 ```
 
 <br>
@@ -64,8 +114,6 @@ _Example_
 
 ```
 html
-
-<!-- All routes and form names should be same -->
 
 <form action="/auth/user/signup" method="post">
   <label for="username">username</label>
@@ -88,8 +136,6 @@ _Example._
 ```
 html
 
-<!-- All routes and form names should be same -->
-
 <a href="/auth/user/google">Log in with google</a>
 ```
 
@@ -99,8 +145,6 @@ Users can log in using either username or email
 
 ```
 html
-
-<!-- All routes and form names should be same -->
 
 <form action="/auth/user/login" method="post">
   <input type="text" name="usernameOrEmail" id="", placeholder="Enter either username or email">
@@ -119,7 +163,15 @@ _Example_
 ```
 html
 
-<!-- All routes and form names should be same -->
-
 <a href="auth/user/logout">Logout</a>
+```
+
+## To get all food available to order to users
+
+_Example_
+
+```
+html
+
+<a href="user/products">See all foods available for order</a>
 ```
