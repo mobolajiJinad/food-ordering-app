@@ -2,6 +2,11 @@
 
 ## NOTE
 
+To test this app, use `git clone "https://github.com/mobolajiJinad/food-ordering-app/"`
+
+Using `npm install` will install all packages used and `npm run dev` will start the app in development mode while `npm start` will run it in production mode.
+<br>
+
 Admin is used to refer to cooks or chefs advertise and sell their foods.<br>
 User refers to customers interested in ordering.<br>
 All routes and form names should be same
