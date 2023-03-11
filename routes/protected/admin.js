@@ -2,11 +2,11 @@ const express = require("express");
 const { StatusCodes } = require("http-status-codes");
 const multer = require("multer");
 
-const Product = require("../../models/Products");
 const {
-  uploadProduct,
-  deleteProduct,
-  getProducts,
+  uploadFood,
+  deleteFood,
+  getFoods,
+  getOrders,
 } = require("../../controllers/protected/admin");
 
 const router = express.Router();
@@ -20,15 +20,29 @@ const storage = multer.diskStorage({
   },
 });
 
-const upload = multer({ dest: "uploads/" });
+const upload = multer({ storage: storage });
+
+// To log admin out
+router.get("/settings/account/logout", (req, res, next) => {
+  req.logout((err) => {
+    if (err) {
+      console.log(err);
+      next(err);
+    }
+    res.status(StatusCodes.OK).json({ msg: "Log out successful" });
+  });
+});
 
 // To add a product up for sale
-router.post("/product/upload", upload.single("image"), uploadProduct);
+router.post("/food/upload", upload.single("image"), uploadFood);
 
 //To view all products submitted
-router.get("/products", getProducts);
+router.get("/foods", getFoods);
 
 // DELETE request to delete a product
-router.delete("/product/:productId", deleteProduct);
+router.delete("/food/:foodId", deleteFood);
+
+// To get all foods that have been ordered
+router.get("/orders", getOrders);
 
 module.exports = router;

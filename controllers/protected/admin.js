@@ -1,11 +1,12 @@
 const fs = require("fs");
 const { StatusCodes } = require("http-status-codes");
 
-const Product = require("../../models/Products");
+const Food = require("../../models/Food");
+const Order = require("../../models/Order");
 
-const uploadProduct = async (req, res, next) => {
+const uploadFood = async (req, res, next) => {
   try {
-    const { name, description, price } = req.body;
+    const { name, description, price, quantity } = req.body;
 
     if (!req.file) {
       return res
@@ -15,18 +16,19 @@ const uploadProduct = async (req, res, next) => {
 
     const createdBy = req.user._id;
 
-    const product = await new Product({
+    const food = await new Food({
       name,
       description,
       price,
+      quantity,
       image: req.file.path,
       createdBy,
     }).save();
 
-    const { _id } = product;
+    const { _id } = food;
     res.status(StatusCodes.CREATED).json({
-      message: "Product created successfully",
-      createdProduct: { _id, name, description, price },
+      msg: "Food created successfully",
+      createdFood: { _id, name, description, price, quantity },
     });
   } catch (err) {
     console.log(err);
@@ -34,46 +36,62 @@ const uploadProduct = async (req, res, next) => {
   }
 };
 
-const deleteProduct = async (req, res) => {
+const deleteFood = async (req, res) => {
   try {
-    const { productId } = req.params;
+    const { foodId } = req.params;
 
-    // find the product by ID and check if it exists
-    const product = await Product.findById(productId);
-    if (!product) {
+    // find the Food by ID and check if it exists
+    const food = await Food.findById(foodId);
+    if (!food) {
       return res
         .status(StatusCodes.NOT_FOUND)
-        .json({ error: "Product not found" });
+        .json({ error: "Food not found" });
     }
 
-    // check if the current admin is the owner of the product
-    if (product.createdBy.toString() !== req.user._id.toString()) {
+    // check if the current admin is the owner of the Food
+    if (food.createdBy.toString() !== req.user._id.toString()) {
       return res
         .status(StatusCodes.UNAUTHORIZED)
-        .json({ error: "You are not authorized to delete this product" });
+        .json({ error: "You are not authorized to delete this Food" });
     }
 
-    // Delete the image associated with the product
-    fs.unlink(product.image, (err) => {
+    // Delete the image associated with the Food
+    fs.unlink(food.image, (err) => {
       if (err) {
         console.log(err);
       }
     });
 
-    await Product.deleteOne({ _id: product._id });
-    res
-      .status(StatusCodes.OK)
-      .json({ message: "Product deleted successfully" });
+    await Food.deleteOne({ _id: food._id });
+    res.status(StatusCodes.OK).json({ msg: "Food deleted successfully" });
   } catch (err) {
     console.log(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err.message });
   }
 };
 
-const getProducts = async (req, res) => {
+const getFoods = async (req, res) => {
   try {
-    const products = await Product.find({ createdBy: req.session.user._id });
-    res.status(StatusCodes.OK).json({ products });
+    const foods = await Food.find({ createdBy: req.user._id }).select(
+      "-orders"
+    );
+    res.status(StatusCodes.OK).json({ foods });
+  } catch (err) {
+    console.log(err);
+    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err.message });
+  }
+};
+
+const getOrders = async (req, res, next) => {
+  try {
+    const createdBy = req.user._id;
+
+    // Get orders where the food belongs to the admin
+    const orders = await Order.find().populate("userId").populate("foodId");
+    // .where("food.adminId")
+    // .equals(createdBy);
+
+    res.status(StatusCodes.OK).json(orders);
   } catch (err) {
     console.log(err);
     res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err.message });
@@ -81,7 +99,8 @@ const getProducts = async (req, res) => {
 };
 
 module.exports = {
-  uploadProduct,
-  deleteProduct,
-  getProducts,
+  uploadFood,
+  deleteFood,
+  getFoods,
+  getOrders,
 };

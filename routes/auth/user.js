@@ -4,7 +4,6 @@ const passport = require("passport");
 const {
   googleCallbackCtrller,
   loginLocalCtrller,
-  logoutLocalCtrller,
   signUpLocalContrller,
 } = require("../../controllers/auth/user");
 
@@ -26,8 +25,6 @@ router.get(
 );
 
 router.post("/login", loginLocalCtrller);
-
-router.get("/logout", logoutLocalCtrller);
 
 router.post("/signup", signUpLocalContrller);
 

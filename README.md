@@ -51,10 +51,10 @@ _Example_
 ```
 html
 
-<a href="auth/admin/logout">Logout</a>
+<a href="admin/settings/account/logout">Logout</a>
 ```
 
-## Getting admin to upload their products
+## Getting admin to upload their foods
 
 _Example_
 
@@ -63,7 +63,7 @@ html
 
 <!--NOTE: All fields are required -->
 
-<form action="/admin/dashboard/product/upload" method="post">
+<form action="/admin/food/upload" method="post">
   <label for="name">Name of food:</label>
   <input type="text" name="name" id="">
 
@@ -74,6 +74,10 @@ html
   <label for="price">Price: </label>
   <input type="number" name="price" id="">
 
+  <!--Quantity should also be a number-->
+  <label for="price">Quantity: </label>
+  <input type="number" name="quantity" id="">
+
   <label for="image">Upload your food/dish image</label>
   <input type="file" name="image" id="">
 
@@ -81,7 +85,7 @@ html
 </form>
 ```
 
-## Deleting an admin's product
+## Deleting an admin's food
 
 _Example_
 
@@ -90,17 +94,27 @@ html
 
 <!--NOTE: this should be a delete request-->
 
-<a href="/admin/product/:productId">Delete</a>
+<a href="/admin/food/:foodId">Delete</a>
 ```
 
-## Getting all admin's products
+## Getting all admin's foods
 
 _Example_
 
 ```
 html
 
-<a href="/admin/dashboard/products">Get all your products</a>
+<a href="/admin/foods">Get all your products</a>
+```
+
+## Getting all admin foods that have been ordered
+
+_Example_
+
+```
+html
+
+<a href="admin/orders">Check foods ordered.</a>
 ```
 
 <br>
@@ -163,7 +177,7 @@ _Example_
 ```
 html
 
-<a href="auth/user/logout">Logout</a>
+<a href="user/settings/account/logout">Logout</a>
 ```
 
 ## To get all food available to order to users
@@ -173,5 +187,25 @@ _Example_
 ```
 html
 
-<a href="user/products">See all foods available for order</a>
+<a href="user/foods">See all foods available for order</a>
+```
+
+## To make an order
+
+_Example_
+
+```
+html
+
+<a href="user/foods/:foodId/order">Order this food.</a>
+```
+
+## To rate an ordered food
+
+_Example_
+
+```
+html
+
+<a href="user/foods/:foodId/rate">Rate this food</a>
 ```

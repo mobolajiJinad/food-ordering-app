@@ -42,7 +42,10 @@ app.use(passport.session());
 app.use("/auth/user", userAuthRoutes);
 app.use("/auth/admin", adminAuthRoutes);
 app.use("/user", requireUser, userProtectedRoutes);
-app.use("/admin/dashboard", requireAdmin, adminProtectedRoutes);
+app.use("/admin", requireAdmin, adminProtectedRoutes);
+app.use("/", (req, res) => {
+  res.json({ msg: "You are home" });
+});
 
 // Add error handling middleware to the app
 app.use(errorHandler);

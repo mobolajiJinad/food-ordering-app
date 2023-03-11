@@ -2,6 +2,7 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const LocalStrategy = require("passport-local").Strategy;
 
+const genPassword = require("../middleware/generatePassword");
 const User = require("../models/User");
 
 passport.serializeUser((user, done) => {
@@ -27,6 +28,7 @@ passport.use(
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
+        console.log(profile);
         // Check if the user already exists
         let user = await User.findOne({ googleId: profile.id });
         if (!user) {
@@ -35,6 +37,7 @@ passport.use(
             googleId: profile.id,
             username: profile.displayName,
             email: profile.emails[0].value,
+            password: await genPassword("default password"),
           });
         }
         done(null, user);

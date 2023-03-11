@@ -35,15 +35,6 @@ const loginLocalCtrller = (req, res, next) => {
   })(req, res, next);
 };
 
-const logoutLocalCtrller = (req, res, next) => {
-  req.logout((err) => {
-    if (err) {
-      next(err);
-    }
-    res.status(StatusCodes.OK).json({ msg: "Log out successful" });
-  });
-};
-
 const signUpLocalContrller = async (req, res, next) => {
   try {
     const { username, email, password } = req.body;
@@ -73,6 +64,5 @@ const signUpLocalContrller = async (req, res, next) => {
 module.exports = {
   googleCallbackCtrller,
   loginLocalCtrller,
-  logoutLocalCtrller,
   signUpLocalContrller,
 };

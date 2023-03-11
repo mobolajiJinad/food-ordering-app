@@ -1,18 +1,29 @@
 const express = require("express");
 const { StatusCodes } = require("http-status-codes");
 
-const Product = require("../../models/Products");
+const {
+  logoutLocalCtrller,
+  changePasswordCtrller,
+  getAllFoods,
+  placeFoodOrder,
+  reviewOrder,
+} = require("../../controllers/protected/user");
 
 const router = express.Router();
 
-router.get("/products", async (req, res, next) => {
-  try {
-    const products = await Product.find().populate("createdBy", "username");
-    res.status(StatusCodes.OK).json(products);
-  } catch (err) {
-    console.log(err);
-    res.status(StatusCodes.INTERNAL_SERVER_ERROR).json({ error: err.message });
-  }
-});
+// To get all Foods available for order
+router.get("/foods", getAllFoods);
+
+// To place a new order
+router.post("/foods/:foodId/order", placeFoodOrder);
+
+// To make users rate an ordered food
+router.post("/foods/:foodId/rate", reviewOrder);
+
+// To log user out
+router.get("/settings/account/logout", logoutLocalCtrller);
+
+// To change password
+router.put("/settings/account/change-password", changePasswordCtrller);
 
 module.exports = router;
